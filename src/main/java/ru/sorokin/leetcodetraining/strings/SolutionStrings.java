@@ -10,6 +10,158 @@ import java.util.regex.Pattern;
 public class SolutionStrings {
 
     /**
+     * 5. Longest Palindromic Substring
+     * Given a string s, return the longest
+     * palindromic
+     *
+     * substring
+     *  in s.
+     *
+     * Example 1:
+     *
+     * Input: s = "babad"
+     * Output: "bab"
+     * Explanation: "aba" is also a valid answer.
+     * Example 2:
+     *
+     * Input: s = "cbbd"
+     * Output: "bb"
+     *
+     *
+     * Constraints:
+     *
+     * 1 <= s.length <= 1000
+     * s consist of only digits and English letters.
+     */
+
+    //Чужое решение нужно изучить!!!!
+    public String longestPalindrome(String s) {
+        // Update the string to put hash "#" at the beginning, end and in between each character
+        String updatedString = getUpdatedString(s);
+        // Length of the array that will store the window of palindromic substring
+        int length = 2 * s.length() + 1;
+        // Array to store the length of each palindrome centered at each element
+        int[] p = new int[length];
+        // Current center of the longest palindromic string
+        int c = 0;
+        // Right boundary of the longest palindromic string
+        int r = 0;
+        // Maximum length of the substring
+        int maxLength = 0;
+        // Position index
+        int position = -1;
+        for (int i = 0; i < length; i++) {
+            // Mirror of the current index
+            int mirror = 2 * c - i;
+            // Check if the mirror is outside the left boundary of current longest palindrome
+            if (i < r) {
+                p[i] = Math.min(r - i, p[mirror]);
+            }
+            // Indices of the characters to be compared
+            int a = i + (1 + p[i]);
+            int b = i - (1 + p[i]);
+            // Expand the window
+            while (a < length && b >= 0 && updatedString.charAt(a) == updatedString.charAt(b)) {
+                p[i]++;
+                a++;
+                b--;
+            }
+            // If the expanded palindrome is expanding beyond the right boundary of
+            // the current longest palindrome, then update c and r
+            if (i + p[i] > r) {
+                c = i;
+                r = i + p[i];
+            }
+            if (maxLength < p[i]) {
+                maxLength = p[i];
+                position = i;
+            }
+        }
+        int offset = p[position];
+        StringBuilder result = new StringBuilder();
+        for (int i = position - offset + 1; i <= position + offset - 1; i++) {
+            if (updatedString.charAt(i) != '#') {
+                result.append(updatedString.charAt(i));
+            }
+        }
+        return result.toString();
+    }
+    private String getUpdatedString(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            sb.append("#").append(s.charAt(i));
+        }
+        sb.append("#");
+        return sb.toString();
+    }
+
+
+    /**
+     * 6. Zigzag Conversion
+     * The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this:
+     * (you may want to display this pattern in a fixed font for better legibility)
+     *
+     * P   A   H   N
+     * A P L S I I G
+     * Y   I   R
+     * And then read line by line: "PAHNAPLSIIGYIR"
+     *
+     * Write the code that will take a string and make this conversion given a number of rows:
+     *
+     * string convert(string s, int numRows);
+     *
+     *
+     * Example 1:
+     *
+     * Input: s = "PAYPALISHIRING", numRows = 3
+     * Output: "PAHNAPLSIIGYIR"
+     * Example 2:
+     *
+     * Input: s = "PAYPALISHIRING", numRows = 4
+     * Output: "PINALSIGYAHRPI"
+     * Explanation:
+     * P     I    N
+     * A   L S  I G
+     * Y A   H R
+     * P     I
+     * Example 3:
+     *
+     * Input: s = "A", numRows = 1
+     * Output: "A"
+     * Constraints:
+     *
+     * 1 <= s.length <= 1000
+     * s consists of English letters (lower-case and upper-case), ',' and '.'.
+     * 1 <= numRows <= 1000
+     */
+
+    //чужое решение нужно изучить!!!!!!
+    public String convert(String s, int numRows) {
+        // Base conditions
+        if (s == null || s.isEmpty() || numRows <= 0) {
+            return "";
+        }
+        if (numRows == 1) {
+            return s;
+        }
+        // Resultant string
+        StringBuilder result = new StringBuilder();
+        // Step size
+        int step = 2 * numRows - 2;
+        // Loop for each row
+        for (int i = 0; i < numRows; i++) {
+            // Loop for each character in the row
+            for (int j = i; j < s.length(); j += step) {
+                result.append(s.charAt(j));
+                if (i != 0 && i != numRows - 1 && (j + step - 2 * i) < s.length()) {
+                    result.append(s.charAt(j + step - 2 * i));
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * 10. Regular Expression Matching
      * Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
      *
